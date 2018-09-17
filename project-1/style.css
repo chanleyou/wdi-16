@@ -1,0 +1,41 @@
+body {
+  font-size: 0px;
+}
+
+#game-board {
+  font-size: 0px;
+}
+
+#stats-display {
+
+}
+
+.game-square {
+  height: 80px;
+  width: 80px;
+  background-color: rgb(210,210,220);
+  border: 1px solid white;
+  display: table-cell;
+  font-size: 40px;
+  font-family: monospace;
+  color: black;
+  text-align: center;
+  vertical-align: middle;
+
+}
+
+.player-tile {
+  background-image: url("./images/happy-face.png");
+}
+
+.next-floor {
+  background-color: rgb(120,210,150);
+}
+
+.danger-tile {
+  background-color: rgb(240,90,90);
+}
+
+.warning-tile {
+  background-color: rgb(210,210,150);
+}
