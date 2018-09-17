@@ -1,7 +1,8 @@
 var gameBoard = document.querySelector("#game-board");
 var floorDisplay = document.querySelector("#floor-display");
 var lifeDisplay = document.querySelector("#life-display");
-var scoreDisplay = document.querySelector("score-display");
+var updateStatement = document.querySelector("#update-statement");
+var lifeNumber = document.querySelector("#life-number");
 
 var boardArray = [];
 
@@ -30,25 +31,6 @@ var createBoard = function (rows, columns) {
     boardArray.push(thisRow);
   }
 }
-
-// for testing purposes
-// TO BE CODED DYNAMICALLY
-createBoard(8, 10);
-
-// TO BE CODED DYNAMICALLY
-// player starting tile is boardArray(row - 1, column 0);
-// exit tile is 0, columns - 1;
-playerTile = boardArray[7][0];
-playerTile.classList.add("player-tile");
-boardArray[0][9].classList.add("next-floor");
-boardArray[4][5].classList.add("danger-tile");
-
-// should this be a separate function? (updatePlayerTile??)
-// order: remove symbol on existing tile, updatePlayerTile, add symbol to new player tile
-// playerTile.innerText = "☺";
-// ???
-// do this in CSS???
-// ☺ https://www.w3schools.com/charsets/ref_utf_symbols.asp
 
 var getPlayerTile = function () {
   for (var y = 0; y < boardArray.length; y++) {
@@ -102,12 +84,26 @@ var nextFloor = function () {
 var gameOver = function () {
   playerTile.style.backgroundImage = `url("./images/sad-face.png")`;
   window.removeEventListener("keydown", movePlayer);
+  updateStatement.textContent = "Game over :(";
+}
+
+var updatePlayerFloor = function () {
+  scoreDisplay.textContent = playerScore;
 }
 
 var updatePlayerLife = function () {
-  console.log("Life: " + playerLife);
+  lifeDisplay.textContent = playerLife;
+
+  if (playerLife <= 30) {
+    lifeDisplay.style.color = "red";
+  } else if (playerLife <= 50) {
+    lifeDisplay.style.color = "yellow";
+  } else {
+      lifeDisplay.style.color = "black";
+  }
   return playerLife;
 }
+
 
 // takes in damage as parameter and returns true if player died, false otherwise
 var playerLoseLife = function (damage) {
@@ -133,7 +129,12 @@ var attemptMove = function (y, x) {
 
   var targetTile = boardArray[y][x];
 
-  playerTile.classList.remove("player-tile");
+  if (targetTile.classList.contains("wall")) {
+    console.log("Player tried to enter wall.");
+    return;
+  }
+
+  playerTile.classList.replace("player-tile", "wall");
   targetTile.classList.add("player-tile");
   playerTile = targetTile;
 
@@ -174,4 +175,22 @@ window.onload = function () {
   // setInterval(pulseFunction, pulse);
 }
 
-// find the fastest safe path to next floor level
+// for testing purposes
+// TO BE CODED DYNAMICALLY
+createBoard(8, 10);
+
+// TO BE CODED DYNAMICALLY
+// player starting tile is boardArray(row - 1, column 0);
+// exit tile is 0, columns - 1;
+playerTile = boardArray[7][0];
+playerTile.classList.add("player-tile");
+boardArray[0][9].classList.add("next-floor");
+boardArray[5][7].classList.add("warning-tile");
+boardArray[4][5].classList.add("danger-tile");
+boardArray[3][3].classList.add("wall");
+
+var startGame = function () {
+
+}
+
+// make tiles die when player leaves

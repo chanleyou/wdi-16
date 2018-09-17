@@ -1,5 +1,5 @@
 body {
-  font-size: 0px;
+  font-family: 'Oxygen Mono', monospace;
 }
 
 #game-board {
@@ -7,7 +7,7 @@ body {
 }
 
 #stats-display {
-
+  font-size: 16px;
 }
 
 .game-square {
@@ -26,6 +26,11 @@ body {
 
 .player-tile {
   background-image: url("./images/happy-face.png");
+  background-size: contain;
+}
+
+.wall {
+  background-color: rgb(0,0,0);
 }
 
 .next-floor {
