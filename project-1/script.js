@@ -196,8 +196,7 @@ var attemptMove = function (y, x) {
 }
 
 
-// enemies chase the player every
-// FIX ENEMIES EATING EACH OTHER?
+// enemies chase the player every second
 var tickFunction = function () {
   var enemies = document.querySelectorAll(".enemy-tile");
 
@@ -217,35 +216,25 @@ var tickFunction = function () {
     var yOffset = yThisEnemy - getPlayerTile().yAxis;
     var xOffset = xThisEnemy - getPlayerTile().xAxis;
 
+    var targetTile;
+
     if (yOffset > 0) {
-      thisEnemy.classList.remove("enemy-tile");
-      if (boardArray[yThisEnemy - 1][xThisEnemy].classList.contains("player-tile")) {
-        playerLoseLife(5);
-      } else {
-        boardArray[yThisEnemy - 1][xThisEnemy].classList.add("enemy-tile");
-      }
+      targetTile = boardArray[yThisEnemy - 1][xThisEnemy];
     } else if (yOffset < 0) {
-      thisEnemy.classList.remove("enemy-tile");
-      if (boardArray[yThisEnemy + 1][xThisEnemy].classList.contains("player-tile")) {
-        playerLoseLife(5);
-      } else {
-        boardArray[yThisEnemy + 1][xThisEnemy].classList.add("enemy-tile");
-      }
+      targetTile = boardArray[yThisEnemy + 1][xThisEnemy];
     } else if (xOffset > 0) {
-      thisEnemy.classList.remove("enemy-tile");
-      if (boardArray[yThisEnemy][xThisEnemy - 1].classList.contains("player-tile")) {
-        playerLoseLife(5);
-      } else {
-        boardArray[yThisEnemy][xThisEnemy - 1].classList.add("enemy-tile");
-      }
+      targetTile = boardArray[yThisEnemy][xThisEnemy - 1];
     } else if (xOffset < 0) {
+      targetTile = boardArray[yThisEnemy][xThisEnemy + 1];
+    }
+
+    if (targetTile.classList.contains("enemy-tile")) {
+    } else {
       thisEnemy.classList.remove("enemy-tile");
-      if (boardArray[yThisEnemy][xThisEnemy + 1].classList.contains("player-tile")) {
-        playerLoseLife(5);
-        return;
-      } else {
-        boardArray[yThisEnemy][xThisEnemy + 1].classList.add("enemy-tile");
-      }
+    } if (targetTile.classList.contains("player-tile")) {
+      playerLoseLife(5);
+    } else {
+      targetTile.classList.add("enemy-tile");
     }
   }
 }
