@@ -1,17 +1,23 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
-    <link href="https://fonts.googleapis.com/css?family=Oxygen+Mono" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Poor+Story" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <meta charset="utf-8">
     <title>Game</title>
   </head>
   <body>
-    <div id="game-board"></div>
-    <div id="stats-display">
+    <div class="container" id="game-board">
+      <div id="instructions">
+        <h1>Welcome to <strong>Zombie Tower</strong>!</h1>
+        <p>Use <strong>WSAD</strong> to control your character. Reach the <span class="green">exit</span> to the next floor while avoiding <span class="grey">enemies</span>, <span class="red">red</span> tiles and <span class="yellow">yellow</span> tiles.</p>
+        <p>Ready? Click anywhere in this box to start!</p>
+      </div>
+    </div>
+    <div class="container" id="stats-display">
+      <p>Life: <span id="life-display"></span><br>
+      Floor: <span id="floor-display"></span></p>
       <p id="update-statement"></p>
-      <p>Floor: <span id="floor-display"></span></p>
-      <p>Life: <span id="life-display"></span></p>
     </div>
   </body>
   <script type="text/javascript" src="script.js"></script>

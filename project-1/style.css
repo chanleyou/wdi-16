@@ -1,5 +1,12 @@
 body {
-  font-family: 'Oxygen Mono', monospace;
+  font-family: 'Poor Story', cursive;
+  background-color: rgb(36,36,36);
+}
+
+.container {
+  color: white;
+  width: 820px;
+  margin: 5px auto;
 }
 
 #game-board {
@@ -7,14 +14,15 @@ body {
 }
 
 #stats-display {
-  font-size: 16px;
+  font-size: 32px;
+  visibility: hidden;
 }
 
 .game-square {
   height: 80px;
   width: 80px;
   background-color: rgb(210,210,220);
-  border: 1px solid white;
+  border: 1px solid rgb(36,36,36);
   display: table-cell;
   font-size: 40px;
   font-family: monospace;
@@ -48,4 +56,25 @@ body {
 .enemy-tile {
   background-image: url("./images/sad-face.png");
   background-size: contain;
+}
+
+#instructions {
+  border: 1px solid white;
+  font-size: 24px;
+}
+
+.green {
+  color: green;
+}
+
+.red {
+  color: red;
+}
+
+.yellow {
+  color: yellow;
+}
+
+.grey {
+  color: grey;
 }

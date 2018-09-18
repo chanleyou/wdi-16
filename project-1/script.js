@@ -1,3 +1,11 @@
+// TBD:
+// newgame button
+// improve graphics, maybe add sound
+// implement powerups
+// improve floor generation
+// - randomise player start and next floor locations
+// - at least one enemy on every floor
+
 var gameBoard = document.querySelector("#game-board");
 var floorDisplay = document.querySelector("#floor-display");
 var lifeDisplay = document.querySelector("#life-display");
@@ -7,13 +15,13 @@ var lifeNumber = document.querySelector("#life-number");
 var playerFloor = 1;
 var playerLife = 100;
 
-var beatsPerMinute = 60;
+var beatsPerMinute = 90;
 var tick = 60000 / beatsPerMinute;
-
-var boardArray = [];
+var enemyTick;
 
 var playerTile;
-var enemyTick;
+var boardArray = [];
+
 
 var createBoard = function (rows, columns) {
   boardArray = [];
@@ -83,6 +91,7 @@ populateBoard = function() {
       randomColumn = Math.floor(Math.random()*10);
     } while ((randomRow < 2 && randomColumn > 7) || (randomRow > 5 && randomColumn < 2))
 
+// is this overlapping warning and danger tiles?
     switch (randomChoice) {
       case 0:
         boardArray[randomRow][randomColumn].classList.add("warning-tile");
@@ -128,12 +137,14 @@ var updatePlayerFloor = function () {
 var updatePlayerLife = function () {
   lifeDisplay.textContent = playerLife;
 
-  if (playerLife <= 30) {
+  if (playerLife <= 0) {
+    lifeDisplay.style.color= "grey";
+  } else if (playerLife <= 30) {
     lifeDisplay.style.color = "red";
   } else if (playerLife <= 50) {
     lifeDisplay.style.color = "yellow";
   } else {
-      lifeDisplay.style.color = "black";
+      lifeDisplay.style.color = "white";
   }
   return playerLife;
 }
@@ -195,8 +206,7 @@ var attemptMove = function (y, x) {
   }
 }
 
-
-// enemies chase the player every second
+// makes enemies chase the player
 var tickFunction = function () {
   var enemies = document.querySelectorAll(".enemy-tile");
 
@@ -243,13 +253,12 @@ var startGame = function () {
   updatePlayerLife();
   updatePlayerFloor();
   newFloor();
+  window.addEventListener("keydown", movePlayer);
+  enemyTick = setInterval(tickFunction, tick);
+  document.querySelector("#stats-display").style.visibility = "visible";
 }
 
-// load all DOM-dependent functions???
 window.onload = function () {
-  window.addEventListener("keydown", movePlayer);
-  startGame();
-  newFloor();
+  document.querySelector("#instructions").addEventListener("click", startGame);
 
-  enemyTick = setInterval(tickFunction, tick);
 }
