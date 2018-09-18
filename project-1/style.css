@@ -44,3 +44,8 @@ body {
 .warning-tile {
   background-color: rgb(210,210,150);
 }
+
+.enemy-tile {
+  background-image: url("./images/sad-face.png");
+  background-size: contain;
+}

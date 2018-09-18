@@ -4,19 +4,20 @@ var lifeDisplay = document.querySelector("#life-display");
 var updateStatement = document.querySelector("#update-statement");
 var lifeNumber = document.querySelector("#life-number");
 
-var boardArray = [];
-
 var playerFloor = 1;
 var playerLife = 100;
-var playerScore = 0;
 
-var beatsPerMinute = 120;
-var pulse = 60000 / beatsPerMinute;
+var beatsPerMinute = 60;
+var tick = 60000 / beatsPerMinute;
 
-// is this redundant with class management and getPlayerTile function???
+var boardArray = [];
+
 var playerTile;
+var enemyTick;
 
 var createBoard = function (rows, columns) {
+  boardArray = [];
+
   for (var i = 0; i < rows; i++) {
     var thisRow = [];
     var newRow = document.createElement("div");
@@ -43,7 +44,6 @@ var getPlayerTile = function () {
   }
 }
 
-// to include: arrow keys
 // keycodes:
 // w: 87
 // s: 83
@@ -57,38 +57,72 @@ var movePlayer = function (event) {
   var keyPressed = event.keyCode;
   switch (keyPressed) {
     case 87:
-      console.log("W pressed.");
       attemptMove (y - 1, x);
       break;
     case 83:
-      console.log("S pressed.");
       attemptMove(y + 1, x);
       break;
     case 65:
-      console.log("A pressed.");
       attemptMove(y, x - 1);
       break;
     case 68:
-      console.log("D pressed.");
       attemptMove(y, x + 1);
       break;
-    default:
-      console.log(keyPressed + ": invalid input.");
   }
 }
 
-var nextFloor = function () {
+populateBoard = function() {
 
+  for (i = 0; i < playerFloor; i++) {
+    var randomChoice = Math.floor(Math.random()*3);
+    var randomRow;
+    var randomColumn;
+
+    do {
+      randomRow = Math.floor(Math.random()*8);
+      randomColumn = Math.floor(Math.random()*10);
+    } while ((randomRow < 2 && randomColumn > 7) || (randomRow > 5 && randomColumn < 2))
+
+    switch (randomChoice) {
+      case 0:
+        boardArray[randomRow][randomColumn].classList.add("warning-tile");
+        break;
+      case 1:
+        boardArray[randomRow][randomColumn].classList.add("danger-tile");
+        break;
+      case 2:
+        boardArray[randomRow][randomColumn].classList.add("enemy-tile");
+
+    }
+  }
+}
+
+// removing all children 1 by 1 is computationally faster than using innerHTML = ""
+// make player and next floor tile random?
+newFloor = function () {
+  gameBoard.innerHTML = "";
+  createBoard(8, 10);
+  playerTile = boardArray[7][0];
+  playerTile.classList.add("player-tile");
+  boardArray[0][9].classList.add("next-floor");
+  populateBoard();
+}
+
+var nextFloor = function () {
+  playerFloor++;
+  newFloor();
+  updatePlayerFloor();
 }
 
 var gameOver = function () {
   playerTile.style.backgroundImage = `url("./images/sad-face.png")`;
   window.removeEventListener("keydown", movePlayer);
   updateStatement.textContent = "Game over :(";
+  clearInterval(enemyTick);
 }
 
 var updatePlayerFloor = function () {
-  scoreDisplay.textContent = playerScore;
+  floorDisplay.textContent = playerFloor;
 }
 
 var updatePlayerLife = function () {
@@ -103,7 +137,6 @@ var updatePlayerLife = function () {
   }
   return playerLife;
 }
-
 
 // takes in damage as parameter and returns true if player died, false otherwise
 var playerLoseLife = function (damage) {
@@ -120,7 +153,6 @@ var playerLoseLife = function (damage) {
 
 // return true if movement if possible
 var attemptMove = function (y, x) {
-  console.log(`Attempting move to ${y}, ${x}.`);
 
   if (y < 0 || x < 0 || y >= boardArray.length || x >= boardArray[0].length) {
     console.log("Movement failed due to exceeding boundaries of grid.");
@@ -134,63 +166,101 @@ var attemptMove = function (y, x) {
     return;
   }
 
-  playerTile.classList.replace("player-tile", "wall");
+  playerTile.classList.remove("player-tile");
   targetTile.classList.add("player-tile");
   playerTile = targetTile;
 
+  if (targetTile.classList.contains("enemy-tile")) {
+    console.log("Player entering enemy tile.");
+    if (playerLoseLife(5)) {
+      return;
+    }
+    targetTile.classList.remove("enemy-tile");
+  }
+
   if (targetTile.classList.contains("warning-tile")) {
-    console.log("Player entering warning tile.")
+    console.log("Player entering warning tile.");
     if (playerLoseLife(1)) {
       return;
     }
   } else if (targetTile.classList.contains("danger-tile")) {
-    console.log("Player entering danger tile.")
+    console.log("Player entering danger tile.");
     if (playerLoseLife(10)) {
       return;
     }
   } else if (targetTile.classList.contains("next-floor")) {
     console.log("Player entering next floor tile.");
     nextFloor();
-    playerFloor++;
-    playerScore += 10;
     return;
   }
 }
 
-// what should pulse do?
-// warning tiles turn into danger tiles
-// danger tiles turn into warning tiles
-// player takes damage based on tile change
 
+// enemies chase the player every
+// FIX ENEMIES EATING EACH OTHER?
+var tickFunction = function () {
+  var enemies = document.querySelectorAll(".enemy-tile");
 
+  for (var i = 0; i < enemies.length; i++) {
+    var thisEnemy = enemies[i];
+    var yThisEnemy;
+    var xThisEnemy;
 
-var pulseFunction = function () {
-  console.log("Pulse.");
+    for (var y = 0; y < boardArray.length; y++) {
+      if (boardArray[y].indexOf(thisEnemy) > -1) {
+        yThisEnemy = y;
+        xThisEnemy = boardArray[y].indexOf(thisEnemy);
+        break;
+      }
+    }
+
+    var yOffset = yThisEnemy - getPlayerTile().yAxis;
+    var xOffset = xThisEnemy - getPlayerTile().xAxis;
+
+    if (yOffset > 0) {
+      thisEnemy.classList.remove("enemy-tile");
+      if (boardArray[yThisEnemy - 1][xThisEnemy].classList.contains("player-tile")) {
+        playerLoseLife(5);
+      } else {
+        boardArray[yThisEnemy - 1][xThisEnemy].classList.add("enemy-tile");
+      }
+    } else if (yOffset < 0) {
+      thisEnemy.classList.remove("enemy-tile");
+      if (boardArray[yThisEnemy + 1][xThisEnemy].classList.contains("player-tile")) {
+        playerLoseLife(5);
+      } else {
+        boardArray[yThisEnemy + 1][xThisEnemy].classList.add("enemy-tile");
+      }
+    } else if (xOffset > 0) {
+      thisEnemy.classList.remove("enemy-tile");
+      if (boardArray[yThisEnemy][xThisEnemy - 1].classList.contains("player-tile")) {
+        playerLoseLife(5);
+      } else {
+        boardArray[yThisEnemy][xThisEnemy - 1].classList.add("enemy-tile");
+      }
+    } else if (xOffset < 0) {
+      thisEnemy.classList.remove("enemy-tile");
+      if (boardArray[yThisEnemy][xThisEnemy + 1].classList.contains("player-tile")) {
+        playerLoseLife(5);
+        return;
+      } else {
+        boardArray[yThisEnemy][xThisEnemy + 1].classList.add("enemy-tile");
+      }
+    }
+  }
+}
+
+var startGame = function () {
+  updatePlayerLife();
+  updatePlayerFloor();
+  newFloor();
 }
 
 // load all DOM-dependent functions???
 window.onload = function () {
   window.addEventListener("keydown", movePlayer);
+  startGame();
+  newFloor();
 
-  // setInterval(pulseFunction, pulse);
+  enemyTick = setInterval(tickFunction, tick);
 }
-
-// for testing purposes
-// TO BE CODED DYNAMICALLY
-createBoard(8, 10);
-
-// TO BE CODED DYNAMICALLY
-// player starting tile is boardArray(row - 1, column 0);
-// exit tile is 0, columns - 1;
-playerTile = boardArray[7][0];
-playerTile.classList.add("player-tile");
-boardArray[0][9].classList.add("next-floor");
-boardArray[5][7].classList.add("warning-tile");
-boardArray[4][5].classList.add("danger-tile");
-boardArray[3][3].classList.add("wall");
-
-var startGame = function () {
-
-}
-
-// make tiles die when player leaves
