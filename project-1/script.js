@@ -201,10 +201,11 @@ var updatePlayerLife = function () {
 }
 
 var updatePlayerBombs = function () {
+  document.querySelector("#bombs-display").textContent = "";
   if (playerBombs > 0) {
-    document.querySelector("#bombs-display").textContent = `Bombs: ${playerBombs}`;
-  } else {
-    document.querySelector("#bombs-display").textContent = "";
+    for (var i = 0; i < playerBombs; i++) {
+      document.querySelector("#bombs-display").textContent += "!";
+    }
   }
 }
 
@@ -227,6 +228,7 @@ var playerLoseLife = function (damage) {
     gameOver ();
     return true;
   } else {
+    playerTile.style.backgroundImage = `url("./images/sad-face.png")`;
     return false;
   }
 }
@@ -246,6 +248,8 @@ var attemptMove = function (y, x) {
     return;
   }
 
+  playerTile.style.backgroundImage = "";
+
   playerTile.classList.remove("player-tile");
   targetTile.classList.add("player-tile");
   playerTile = targetTile;
@@ -260,7 +264,8 @@ var attemptMove = function (y, x) {
 
   if (targetTile.classList.contains("med-pack")) {
     console.log("Player picked up a med pack.");
-    playerLoseLife(-15);
+    playerLife += 15;
+    updatePlayerLife();
     document.querySelector('.med-pack').classList.remove("med-pack");
   }
 

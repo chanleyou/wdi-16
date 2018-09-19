@@ -55,7 +55,7 @@ body {
 }
 
 .enemy-tile {
-  background-image: url("./images/sad-face.png");
+  background-image: url("./images/zombie.png");
   background-size: contain;
 }
 
@@ -103,6 +103,6 @@ h1 {
   color: rgb(210,210,150);
 }
 
-.grey {
-  color: grey;
+.zombie {
+  color: rgb(154,124,76);
 }
