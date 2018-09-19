@@ -1,5 +1,4 @@
 // TBD:
-// newgame button
 // improve graphics, maybe add sound
 // implement powerups
 // improve floor generation
@@ -9,7 +8,6 @@
 var gameBoard = document.querySelector("#game-board");
 var floorDisplay = document.querySelector("#floor-display");
 var lifeDisplay = document.querySelector("#life-display");
-var updateStatement = document.querySelector("#update-statement");
 var lifeNumber = document.querySelector("#life-number");
 
 var playerFloor = 1;
@@ -126,8 +124,8 @@ var nextFloor = function () {
 var gameOver = function () {
   playerTile.style.backgroundImage = `url("./images/sad-face.png")`;
   window.removeEventListener("keydown", movePlayer);
-  updateStatement.textContent = "Game over :(";
   clearInterval(enemyTick);
+  document.querySelector("#play-again").style.visibility = "visible";
 }
 
 var updatePlayerFloor = function () {
@@ -260,5 +258,14 @@ var startGame = function () {
 
 window.onload = function () {
   document.querySelector("#instructions").addEventListener("click", startGame);
+  document.querySelector("#play-again").addEventListener("click", newGame);
 
+}
+
+// new game function
+var newGame = function () {
+  playerLife = 100;
+  playerFloor = 1;
+  startGame();
+  document.querySelector("#play-again").style.visibility = "hidden";
 }

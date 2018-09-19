@@ -1,6 +1,7 @@
 body {
   font-family: 'Poor Story', cursive;
   background-color: rgb(36,36,36);
+  user-select: none;
 }
 
 .container {
@@ -58,9 +59,20 @@ body {
   background-size: contain;
 }
 
-#instructions {
+#instructions{
   border: 1px solid white;
   font-size: 24px;
+}
+
+#play-again {
+  border: 1px solid white;
+  visibility: hidden;
+  display: inline-block;
+  background-color: rgb(48,48,48);
+  height: 48px;
+  line-height: 48px;
+  width: 180px;
+  text-align: center;
 }
 
 .green {
