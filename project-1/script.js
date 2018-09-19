@@ -239,13 +239,7 @@ var attemptMove = function (y, x) {
 
   var targetTile = boardArray[y][x];
 
-  if (targetTile.classList.contains("wall")) {
-    console.log("Player tried to enter wall.");
-    return;
-  }
-
-  playerTile.style.backgroundImage = "";
-
+  playerTile.style.backgroundImage = ""; // removes sad face after taking dmg
   playerTile.classList.remove("player-tile");
   targetTile.classList.add("player-tile");
   playerTile = targetTile;
