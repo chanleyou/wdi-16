@@ -9,6 +9,7 @@ var lifeNumber = document.querySelector("#life-number");
 
 var playerFloor = 1;
 var playerLife = 100;
+var playerBombs = 0;
 
 var beatsPerMinute = 90;
 var tick = 60000 / beatsPerMinute;
@@ -65,6 +66,11 @@ var movePlayer = function (event) {
       break;
     case 68: // d
       attemptMove(y, x + 1);
+      break;
+    case 82: // r
+      if (playerBombs > 0) {
+        useBomb();
+      }
       break;
   }
 }
@@ -127,6 +133,28 @@ populateBoard = function () {
     }
     selectedTile.classList.add("has-obstacle");
   }
+
+  // 12.5% chance of generating a random power up every floor
+  var randomPowerup = Math.floor(Math.random()*16);
+  var randomMedRow;
+  var randomMedColumn;
+  var medTile;
+
+  if (randomPowerup < 2) {
+    do {
+      randomMedRow = Math.floor(Math.random()*8);
+      randomMedColumn = Math.floor(Math.random()*10);
+      medTile = boardArray[randomMedRow][randomMedColumn];
+    } while (medTile.classList.contains("has-obstacle") ||
+    medTile.classList.contains("next-floor") ||
+    medTile.classList.contains("player-tile"))
+
+    if (randomPowerup === 0) {
+      medTile.classList.add("med-pack");
+    } else {
+      medTile.classList.add("bomb");
+    }
+  }
 }
 
 // removing all children 1 by 1 is computationally faster than using innerHTML = ""
@@ -172,6 +200,24 @@ var updatePlayerLife = function () {
   return playerLife;
 }
 
+var updatePlayerBombs = function () {
+  if (playerBombs > 0) {
+    document.querySelector("#bombs-display").textContent = `Bombs: ${playerBombs}`;
+  } else {
+    document.querySelector("#bombs-display").textContent = "";
+  }
+}
+
+var useBomb = function () {
+  playerBombs --;
+  updatePlayerBombs();
+  allEnemies = document.querySelectorAll(".enemy-tile");
+
+  for (var i = 0; i < allEnemies.length; i++) {
+    allEnemies[i].classList.remove("enemy-tile");
+  }
+}
+
 // takes in damage as parameter and returns true if player died, false otherwise
 var playerLoseLife = function (damage) {
   playerLife -= damage;
@@ -210,6 +256,19 @@ var attemptMove = function (y, x) {
       return;
     }
     targetTile.classList.remove("enemy-tile");
+  }
+
+  if (targetTile.classList.contains("med-pack")) {
+    console.log("Player picked up a med pack.");
+    playerLoseLife(-15);
+    document.querySelector('.med-pack').classList.remove("med-pack");
+  }
+
+  if (targetTile.classList.contains("bomb")) {
+    console.log("Player picked up a bomb.");
+    playerBombs ++;
+    updatePlayerBombs();
+    document.querySelector('.bomb').classList.remove("bomb");
   }
 
   if (targetTile.classList.contains("warning-tile")) {
@@ -287,10 +346,10 @@ window.onload = function () {
 
 }
 
-// new game function
 var newGame = function () {
   playerLife = 100;
   playerFloor = 1;
+  playerBombs = 0;
   startGame();
   document.querySelector("#play-again").style.visibility = "hidden";
 }

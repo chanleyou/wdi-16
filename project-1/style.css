@@ -59,9 +59,25 @@ body {
   background-size: contain;
 }
 
-#instructions{
+.med-pack {
+  background-image: url("./images/red-cross.png");
+  background-size: contain;
+}
+
+.bomb {
+  background-image: url("./images/bomb.png");
+  background-size: contain;
+}
+
+#instructions {
   border: 1px solid white;
   font-size: 24px;
+  padding: 5px;
+}
+
+h1 {
+  text-align: center;
+  font-family: 'Special Elite', cursive;
 }
 
 #play-again {
@@ -76,15 +92,15 @@ body {
 }
 
 .green {
-  color: green;
+  color: rgb(120,210,150);
 }
 
 .red {
-  color: red;
+  color: rgb(240,90,90);
 }
 
 .yellow {
-  color: yellow;
+  color: rgb(210,210,150);
 }
 
 .grey {
