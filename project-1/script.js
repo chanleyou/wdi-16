@@ -1,9 +1,6 @@
 // TBD:
 // improve graphics, maybe add sound
 // implement powerups
-// improve floor generation
-// - randomise player start and next floor locations
-// - at least one enemy on every floor
 
 var gameBoard = document.querySelector("#game-board");
 var floorDisplay = document.querySelector("#floor-display");
@@ -50,11 +47,6 @@ var getPlayerTile = function () {
   }
 }
 
-// keycodes:
-// w: 87
-// s: 83
-// a: 65
-// d: 68
 var movePlayer = function (event) {
 
   var y = getPlayerTile().yAxis;
@@ -62,34 +54,67 @@ var movePlayer = function (event) {
 
   var keyPressed = event.keyCode;
   switch (keyPressed) {
-    case 87:
+    case 87: // w
       attemptMove (y - 1, x);
       break;
-    case 83:
+    case 83: // s
       attemptMove(y + 1, x);
       break;
-    case 65:
+    case 65: // a
       attemptMove(y, x - 1);
       break;
-    case 68:
+    case 68: // d
       attemptMove(y, x + 1);
       break;
   }
 }
 
-populateBoard = function() {
+populateBoard = function () {
+  randomStart = Math.floor(Math.random()*4);
 
-  for (i = 0; i < playerFloor; i++) {
+  switch (randomStart) {
+    case 0:
+      playerTile = boardArray[0][0];
+      boardArray[7][9].classList.add("next-floor");
+      break;
+    case 1:
+      playerTile = boardArray[0][9];
+      boardArray[7][0].classList.add("next-floor");
+      break;
+    case 2:
+      playerTile = boardArray[7][9];
+      boardArray[0][0].classList.add("next-floor");
+      break;
+    default:
+      playerTile = boardArray[7][0];
+      boardArray[0][9].classList.add("next-floor");
+      break;
+  }
+  playerTile.classList.add("player-tile");
+
+  //at least 1 enemy per floor
+  var enemyRandomRow = 3 + Math.floor(Math.random()*4);
+  var enemyRandomColumn = 3 + Math.floor(Math.random()*6);
+  boardArray[enemyRandomRow][enemyRandomColumn].classList.add("enemy-tile");
+
+  // generates more stuff the higher you go
+  for (i = 0; i < Math.floor(playerFloor/2); i++) {
     var randomChoice = Math.floor(Math.random()*3);
     var randomRow;
     var randomColumn;
+    var selectedTile;
 
+    // avoids tiles with something and potential player/exit tiles
     do {
       randomRow = Math.floor(Math.random()*8);
       randomColumn = Math.floor(Math.random()*10);
-    } while ((randomRow < 2 && randomColumn > 7) || (randomRow > 5 && randomColumn < 2))
+      selectedTile = boardArray[randomRow][randomColumn];
+    } while (selectedTile.classList.contains("obstacle-generated") ||
+    (randomRow < 2 && randomColumn < 2) ||
+    (randomRow > 5 && randomColumn < 2) ||
+    (randomRow < 2 && randomColumn > 7) ||
+    (randomRow > 5 && randomColumn > 7))
 
-// is this overlapping warning and danger tiles?
     switch (randomChoice) {
       case 0:
         boardArray[randomRow][randomColumn].classList.add("warning-tile");
@@ -99,19 +124,15 @@ populateBoard = function() {
         break;
       case 2:
         boardArray[randomRow][randomColumn].classList.add("enemy-tile");
-
     }
+    selectedTile.classList.add("obstacle-generated");
   }
 }
 
 // removing all children 1 by 1 is computationally faster than using innerHTML = ""
-// make player and next floor tile random?
 newFloor = function () {
   gameBoard.innerHTML = "";
   createBoard(8, 10);
-  playerTile = boardArray[7][0];
-  playerTile.classList.add("player-tile");
-  boardArray[0][9].classList.add("next-floor");
   populateBoard();
 }
 
