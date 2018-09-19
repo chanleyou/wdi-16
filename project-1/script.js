@@ -305,14 +305,28 @@ var tickFunction = function () {
 
     var targetTile;
 
-    if (yOffset > 0) {
-      targetTile = boardArray[yThisEnemy - 1][xThisEnemy];
-    } else if (yOffset < 0) {
-      targetTile = boardArray[yThisEnemy + 1][xThisEnemy];
-    } else if (xOffset > 0) {
-      targetTile = boardArray[yThisEnemy][xThisEnemy - 1];
-    } else if (xOffset < 0) {
-      targetTile = boardArray[yThisEnemy][xThisEnemy + 1];
+    // randomises whether enemies chase via x or y axis
+    var randomXYFirst = Math.floor(Math.random()*2);
+    if (randomXYFirst === 1) {
+      if (yOffset > 0) {
+        targetTile = boardArray[yThisEnemy - 1][xThisEnemy];
+      } else if (yOffset < 0) {
+        targetTile = boardArray[yThisEnemy + 1][xThisEnemy];
+      } else if (xOffset > 0) {
+        targetTile = boardArray[yThisEnemy][xThisEnemy - 1];
+      } else if (xOffset < 0) {
+        targetTile = boardArray[yThisEnemy][xThisEnemy + 1];
+      }
+    } else {
+      if (xOffset > 0) {
+        targetTile = boardArray[yThisEnemy][xThisEnemy - 1];
+      } else if (xOffset < 0) {
+        targetTile = boardArray[yThisEnemy][xThisEnemy + 1];
+      } else if (yOffset > 0) {
+        targetTile = boardArray[yThisEnemy - 1][xThisEnemy];
+      } else if (yOffset < 0) {
+        targetTile = boardArray[yThisEnemy + 1][xThisEnemy];
+      }
     }
 
     if (targetTile.classList.contains("enemy-tile")) {
