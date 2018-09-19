@@ -109,7 +109,7 @@ populateBoard = function () {
       randomRow = Math.floor(Math.random()*8);
       randomColumn = Math.floor(Math.random()*10);
       selectedTile = boardArray[randomRow][randomColumn];
-    } while (selectedTile.classList.contains("obstacle-generated") ||
+    } while (selectedTile.classList.contains("has-obstacle") ||
     (randomRow < 2 && randomColumn < 2) ||
     (randomRow > 5 && randomColumn < 2) ||
     (randomRow < 2 && randomColumn > 7) ||
@@ -125,7 +125,7 @@ populateBoard = function () {
       case 2:
         boardArray[randomRow][randomColumn].classList.add("enemy-tile");
     }
-    selectedTile.classList.add("obstacle-generated");
+    selectedTile.classList.add("has-obstacle");
   }
 }
 
@@ -140,6 +140,10 @@ var nextFloor = function () {
   playerFloor++;
   newFloor();
   updatePlayerFloor();
+  clearInterval(enemyTick);
+  setTimeout(function() {
+    enemyTick = setInterval(tickFunction, tick);
+  }, 250);
 }
 
 var gameOver = function () {
