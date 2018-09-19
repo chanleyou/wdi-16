@@ -1,7 +1,3 @@
-// TBD:
-// improve graphics, maybe add sound
-// implement powerups
-
 var gameBoard = document.querySelector("#game-board");
 var floorDisplay = document.querySelector("#floor-display");
 var lifeDisplay = document.querySelector("#life-display");
@@ -136,23 +132,23 @@ populateBoard = function () {
 
   // 12.5% chance of generating a random power up every floor
   var randomPowerup = Math.floor(Math.random()*16);
-  var randomMedRow;
-  var randomMedColumn;
-  var medTile;
+  var randomPowerupRow;
+  var randomPowerupColumn;
+  var powerupTile;
 
   if (randomPowerup < 2) {
     do {
-      randomMedRow = Math.floor(Math.random()*8);
-      randomMedColumn = Math.floor(Math.random()*10);
-      medTile = boardArray[randomMedRow][randomMedColumn];
-    } while (medTile.classList.contains("has-obstacle") ||
-    medTile.classList.contains("next-floor") ||
-    medTile.classList.contains("player-tile"))
+      randomPowerupRow = Math.floor(Math.random()*8);
+      randomPowerupColumn = Math.floor(Math.random()*10);
+      powerupTile = boardArray[randomPowerupRow][randomPowerupColumn];
+    } while (powerupTile.classList.contains("has-obstacle") ||
+    powerupTile.classList.contains("next-floor") ||
+    powerupTile.classList.contains("player-tile"))
 
     if (randomPowerup === 0) {
-      medTile.classList.add("med-pack");
+      powerupTile.classList.add("med-pack");
     } else {
-      medTile.classList.add("bomb");
+      powerupTile.classList.add("bomb");
     }
   }
 }
@@ -178,7 +174,7 @@ var gameOver = function () {
   playerTile.style.backgroundImage = `url("./images/sad-face.png")`;
   window.removeEventListener("keydown", movePlayer);
   clearInterval(enemyTick);
-  document.querySelector("#play-again").style.visibility = "visible";
+  document.querySelector("#play-again").style.display = "inline-block";
 }
 
 var updatePlayerFloor = function () {
@@ -343,10 +339,12 @@ var startGame = function () {
   window.addEventListener("keydown", movePlayer);
   enemyTick = setInterval(tickFunction, tick);
   document.querySelector("#stats-display").style.visibility = "visible";
+  document.querySelector("#instructions").style.display = "none";
+  document.querySelector("#start-button").style.display = "none";
 }
 
 window.onload = function () {
-  document.querySelector("#instructions").addEventListener("click", startGame);
+  document.querySelector("#start-button").addEventListener("click", startGame);
   document.querySelector("#play-again").addEventListener("click", newGame);
 
 }
@@ -356,5 +354,5 @@ var newGame = function () {
   playerFloor = 1;
   playerBombs = 0;
   startGame();
-  document.querySelector("#play-again").style.visibility = "hidden";
+  document.querySelector("#play-again").style.display="none";
 }

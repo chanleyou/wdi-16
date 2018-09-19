@@ -4,6 +4,10 @@ body {
   user-select: none;
 }
 
+#header {
+  margin: 10px 0 0 0;
+}
+
 .container {
   color: white;
   width: 820px;
@@ -17,6 +21,18 @@ body {
 #stats-display {
   font-size: 32px;
   visibility: hidden;
+}
+
+#hp-col {
+  text-align: left;
+}
+
+#bombs-col, #again-col {
+  text-align: center;
+}
+
+#floor-col {
+  text-align: right;
 }
 
 .game-square {
@@ -70,7 +86,6 @@ body {
 }
 
 #instructions {
-  border: 1px solid white;
   font-size: 24px;
   padding: 5px;
 }
@@ -80,15 +95,24 @@ h1 {
   font-family: 'Special Elite', cursive;
 }
 
-#play-again {
+.game-button {
   border: 1px solid white;
-  visibility: hidden;
-  display: inline-block;
   background-color: rgb(48,48,48);
   height: 48px;
   line-height: 48px;
   width: 180px;
   text-align: center;
+  color: white;
+  font-size: 32px;
+  border-radius: 3px;
+}
+
+.game-button:focus {
+  outline: none;
+}
+
+#play-again {
+  display: none;
 }
 
 .green {
@@ -105,4 +129,8 @@ h1 {
 
 .zombie {
   color: rgb(154,124,76);
+}
+
+p {
+  margin: 0.5rem 0;
 }
